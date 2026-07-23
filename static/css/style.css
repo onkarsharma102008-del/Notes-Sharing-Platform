@@ -1,0 +1,211 @@
+h1{
+    color: white;
+    text-align: left;
+    font-size: 50px;
+
+}
+h2,h3{
+    text-align: center;
+    font-size: 30px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+body{
+    font-size: center;
+}
+
+h6{
+    font-size: 20px;
+    color: white;
+    text-align: left;
+}
+/* *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+} */
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#0a1f44;
+    padding:20px 50px;
+}
+
+.logo{
+    color:white;
+    font-size:35px;
+    font-weight:bold;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    margin-left:35px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.menu a:hover{
+    color:#00d4ff;
+}
+.overlay {
+    height: 100vh;
+    display: flex;
+    justify-content: center;   /* Left-Right center */
+    align-items: center;       /* Up-Down center */
+    text-align: center;
+
+    /* Thoda niche lane ke liye */
+    padding-top: 80px;
+}
+.overlay-content{
+    margin-top: -150px;
+    margin-left: -850px;
+}    
+
+.overlay-content h1 {
+    font-size: 60px;
+    color: white;
+}
+.overlay-content p {
+    font-size: 25px;
+    color: white;
+}
+
+.button {
+    padding: 12px 25px;
+    margin: 10px;
+}
+
+
+p{
+    font-size: 30px;
+    text-align: left;
+}
+button{
+    background : chartreuse;
+    font-size: 15px;
+    top: 50px;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+}
+body{
+    margin: 0;
+    padding: 0;
+    background-image: url("../images/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+   
+}
+.home h2 {
+    color: black;
+    font-size:60px;
+}
+.home{
+    height:100%;
+    width:100%;
+    background-color: white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.house {
+    height: 100vh;
+    display: flex;
+    background-color: white;
+    justify-content: center;   /* Left-Right center */
+    align-items: center;       /* Up-Down center */
+    text-align: center;
+
+    /* Thoda niche lane ke liye */
+    padding-top: 80px;
+}
+.house-contect{
+    margin-top: -400px;
+    margin-left:-100px;
+}    
+
+.house-contect h1 {
+    font-size: 60px;
+    color: white;
+}
+
+.house-contect p {
+    font-size: 25px;
+    color: white;
+}
+
+.button {
+    padding: 12px 25px;
+    margin: 10px;
+}
+
+.dashboard {
+    height: 100vh;
+    display: flex;
+    justify-content: center;   /* Left-Right center */
+    align-items: center;       /* Up-Down center */
+    text-align: center;
+
+    /* Thoda niche lane ke liye */
+    padding-top: 80px;
+}
+.dashboard-content{
+    margin-top: -500px;
+    margin-left: -300px;
+}    
+
+.dashboard-content h4 {
+    font-size: 60px;
+    color: white;
+}
+
+.dashboard-content p {
+    font-size: 25px;
+    color: white;
+}
+
+.button {
+    padding: 12px 25px;
+    margin: 10px;
+}
+
+.village h5 {
+    color: black;
+    font-size:60px;
+}
+.village{
+    height:100%;
+    width:100%;
+    background-color: white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+.village-content{
+    margin-top: -600px;
+    margin-left: -100px;
+}
+
+.profile-img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}

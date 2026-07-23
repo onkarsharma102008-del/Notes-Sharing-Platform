@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Notes Sharing Platform</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body>
+      
+         <nav class="navbar">
+            <div class="logo">
+                 Notes Sharing Platform 
+            </div>
+            <div class="menu">
+            <a href="/">Home</a>|
+            <a href="/notes">All Notes</a>|
+            <!-- <a href="/upload">upload Notes</a>| -->
+            <a href="/login">Login</a>|
+            <a href="/signup">Signup</a>
+
+        </div>
+        </nav>
+
+<section class="overlay">       
+    <div class="overlay-content">
+         <h1>Welcome to <br>
+            Notes Sharing Platform</h1><br>
+        <p>Upload Your notes and help others.<br>
+          Download notes and learn together.</p>
+        <br>
+
+      
+        <a href="/notes">
+            <button> Browser Notes</button></a>
+        <a href="/upload">
+            <button>Upload Notes</button></a>
+       
+    </div>
+</section>
+
+    </body>
+</html>
