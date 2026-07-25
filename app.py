@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
+app.secret_key = "my_secret_key_123"
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS notes (
 conn.commit()
 conn.close()
 
-app.secret_key = "my_secret_key"
+
 
 
 UPLOAD_FOLDER = "uploads"
@@ -78,6 +79,12 @@ def signup():
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("password")
+
+        # Session me user data save karo
+        session["fullname"] = fullname
+        session["email"] = email
+        session["username"] = username
+        session["password"] = password
 
         # OTP generate
         otp = str(random.randint(100000, 999999))
