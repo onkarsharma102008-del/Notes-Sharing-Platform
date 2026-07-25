@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory 
 from flask_mail import Mail, Message
+import random
 from datetime import datetime
+from flask import send_from_directory
+from smtplib import SMTPRecipientsRefused
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "yourgmail@gmail.com"
-app.config["MAIL_PASSWORD"] = "your_app_password"
+app.config["MAIL_USERNAME"] = "onkarsharma102008@gmail.com"
+app.config["MAIL_PASSWORD"] ="zxfx khhm avsm tnjp "
+mail = Mail(app)
 
 conn = sqlite3.connect("users.db")
 cursor = conn.cursor()
@@ -67,43 +72,86 @@ def home():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+
     if request.method == "POST":
         fullname = request.form.get("fullname")
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if not fullname or not email or not username or not password:
-            return "Please fill all fields."
+        # OTP generate
+        otp = str(random.randint(100000, 999999))
+        session["otp"] = otp
 
-        # Database me save karne ka code
+        msg = Message(
+            "Email Verification",
+            sender=app.config["MAIL_USERNAME"],
+            recipients=[email]
+        )
+
+        msg.body = f"Your OTP is: {otp}"
+
+        try:
+            mail.send(msg)
+            return redirect(url_for("verify_otp"))
+
+        except SMTPRecipientsRefused:
+            return render_template(
+                "signup.html",
+                error="This email is not available."
+            )
 
     return render_template("signup.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
 
-        if not username or not password:
-            return "Please fill all fields."
+        print(request.form)
 
-        # Login check
+        email = request.form["email"]
+        password = request.form["password"]
+
+        print("Email:",email)
+        print("password:",password)
+        
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
+
         cursor.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
-            (username, password)
+            "SELECT * FROM users WHERE email=? AND password=?",
+            (email, password)
         )
+
         user = cursor.fetchone()
         conn.close()
 
         if user:
-            session["username"] = username
+
+            session["username"] = user[3]
+
+            msg = Message(
+                "Login Successful",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[email]
+            )
+
+            msg.body = """
+Hello,
+
+Your account has been logged in successfully.
+
+If this was not you, please change your password immediately.
+
+Thank you.
+"""
+
+            mail.send(msg)
             return redirect(url_for("dashboard"))
+
         else:
-            return "Invalid Username or Password"
+            return "Invalid Email or Password"
 
     return render_template("login.html")
 
@@ -149,22 +197,19 @@ def upload():
         file = request.files["pdf"]
         filename =  secure_filename (file.filename)
         file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename))
-        upload_date = datetime.now().strftime("%d-%m-%Y")
-
-        conn = sqlite3.connect("users.db")
-        cursor = conn.cursor()
-
+        upload_date=datetime.now().strftime("%d-%m-%y")
         cursor.execute("""
-        INSERT INTO notes
-        (title, subject, semester, filename, uploaded_by)
-        VALUES (?, ?, ?, ?, ?)
-        """, (
-            title,
-            subject,
-            semester,
-            filename,
-            Uploaded_by
-        ))
+INSERT INTO notes
+(title, subject, semester, filename, uploaded_by, uploaded_date)
+VALUES (?, ?, ?, ?, ?, ?)
+""", (
+    title,
+    subject,
+    semester,
+    filename,
+    Uploaded_by,
+    upload_date
+))
 
         conn.commit()
         conn.close()
@@ -176,24 +221,27 @@ def upload():
    
 @app.route("/notes")
 def notes():
-
     if "username" not in session:
         return redirect(url_for("login"))
 
+    search = request.args.get("search", "")
+
     conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    cursor.execute("""
-    SELECT id, title, subject, semester, uploaded_by
-    FROM notes
-    WHERE uploaded_by = ?
-    """, (session["username"],))
+    if search:
+        cursor.execute("""
+            SELECT * FROM notes
+            WHERE title LIKE ? OR subject LIKE ?
+        """, (f"%{search}%", f"%{search}%"))
+    else:
+        cursor.execute("SELECT * FROM notes")
 
     notes = cursor.fetchall()
-
     conn.close()
 
-    return render_template("notes.html", notes=notes)
+    return render_template("all_notes.html", notes=notes)
 
 @app.route("/profile")
 def profile():
@@ -211,7 +259,7 @@ def profile():
     user = cursor.fetchone()
 
     cursor.execute(
-        "SELECT id,title,subject,semester FROM notes WHERE uploaded_by=?",
+        "SELECT id,title,subject,semester,upload_date FROM notes WHERE uploaded_by=?",
         (session["username"],)
     )
     notes = cursor.fetchall()
@@ -383,7 +431,125 @@ def delete(id):
 
     return redirect(url_for("notes"))
 
+
+@app.route("/preview/<filename>")
+def preview_file(filename):
+    return send_from_directory(
+        "uploads",
+        filename,
+        as_attachment=False
+    )
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE email=?", (email,))
+        user = cursor.fetchone()
+
+        conn.close()
+
+        if user:
+
+            otp = str(random.randint(100000, 999999))
+
+            session["reset_email"] = email
+            session["reset_otp"] = otp
+
+            msg = Message(
+                "Password Reset OTP",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[email]
+            )
+
+            msg.body = f"Your Password Reset OTP is: {otp}"
+
+            mail.send(msg)
+
+            return redirect(url_for("verify_reset_otp"))
+
+        else:
+            return "Email not found."
+
+    return render_template("forgot_password.html")
+
+@app.route("/reset_password", methods=["GET", "POST"])
+def reset_password():
+    email = session.get("reset_email")
+
+    if request.method == "POST":
+        new_password = request.form["new_password"]
+
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE users SET password=? WHERE email=?",
+            (new_password, email)
+        )
+
+        conn.commit()
+        conn.close()
+
+        session.pop("reset_email", None)
+        session.pop("reset_otp", None)
+
+        return redirect(url_for("login"))
+
+    return render_template("reset_password.html") 
+
+@app.route("/verify_otp", methods=["GET", "POST"])
+def verify_otp():
+    if request.method == "POST":
+        entered_otp = request.form["otp"]
+
+        if entered_otp == session.get("otp"):
+
+            # Yahan user ko database me save karo
+            conn = sqlite3.connect("users.db")
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO users(fullname, email, username, password)
+                VALUES (?, ?, ?, ?)
+            """, (
+                session["fullname"],
+                session["email"],
+                session["username"],
+                session["password"],
+            ))
+
+            conn.commit()
+            conn.close()
+
+            session.pop("otp", None)
+
+            return redirect(url_for("login"))   # 👈 OTP ke baad Login page
+
+        else:
+            return "Invalid OTP"
+
+    return render_template("verify_otp.html")
+
+@app.route("/verify_reset_otp", methods=["GET", "POST"])
+def verify_reset_otp():
+
+    if request.method == "POST":
+
+        otp = request.form["otp"]
+
+        if otp == session.get("reset_otp"):
+            return redirect(url_for("reset_password"))
+        else:
+            return "Invalid OTP"
+
+    return render_template("verify_reset_otp.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-

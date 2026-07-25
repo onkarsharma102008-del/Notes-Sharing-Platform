@@ -82,8 +82,6 @@ class="rounded-circle mb-3"> -->
 
 <th>Semester</th>
 
-<th>Date</th>
-
 <th>Action</th>
 </tr>
 
@@ -95,8 +93,7 @@ class="rounded-circle mb-3"> -->
     <td>{{ note[0] }}</td>
     <td>{{ note[1] }}</td>
     <td>{{ note[2] }}</td>
-    <td>{{ note[3] }}</td>
-    <td>{{ note[4] }}</td>
+    <td>{{ note[3]}}</td>
     <td>
     <a href="{{ url_for('edit', id=note[0]) }}" class="btn btn-warning btn-sm">
         Edit
