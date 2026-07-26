@@ -15,8 +15,8 @@ app.secret_key = "my_secret_key_123"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "onkarsharma102008@gmail.com"
-app.config["MAIL_PASSWORD"] ="zxfx khhm avsm tnjp "
+app.config["MAIL_USERNAME"] = "notessharingplatform43@gmail.com"
+app.config["MAIL_PASSWORD"] ="kcre rpkd vmvt rpqw"
 mail = Mail(app)
 
 conn = sqlite3.connect("users.db")
@@ -137,6 +137,7 @@ def login():
         if user:
 
             session["username"] = user[3]
+            
 
             msg = Message(
                 "Login Successful",
@@ -151,7 +152,8 @@ Your account has been logged in successfully.
 
 If this was not you, please change your password immediately.
 
-Thank you.
+Thank you,
+Notes Sharing Platform.
 """
 
             mail.send(msg)
