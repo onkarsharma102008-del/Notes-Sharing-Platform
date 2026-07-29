@@ -61,28 +61,6 @@
 
             <h2 class="mb-4">All Notes</h2>
 
-            <!-- <form method="GET" action="{{ url_for('all_notes') }}">
-
-                <div class="row">
-
-                    <div class="col-md-10">
-                        <input type="text"
-                               class="form-control"
-                               name="search"
-                               placeholder="Search by title or subject"
-                               value="{{ request.args.get('search','') }}">
-                    </div>
-
-                    <div class="col-md-2">
-                        <button class="btn btn-primary w-100">
-                            Search
-                        </button>
-                    </div>
-
-                </div>
-
-            </form> -->
-
 
             <form method="GET" action="{{ url_for('notes') }}" class="d-flex mb-4">
     <input type="text"
@@ -106,7 +84,7 @@
                     <div class="col-md-1">
                         <img src="{{ url_for('static', filename='images/pdf.png') }}" class="pdf-icon">
                     </div>
-
+                    
                     <div class="col-md-7">
 
                         <h5>{{ note.title }}</h5>

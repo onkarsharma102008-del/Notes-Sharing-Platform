@@ -2,30 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Notes</title>
-       <link rel="stylesheet" href="{{url_for('static',filename='css/style.css') }}">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body style="background-color:white;">
 
-    <nav class="navbar">
-            <div class="logo">
-                 Notes Sharing Platform 
-            </div>
-            <div class="menu">
-            <a href="/">Home</a>|
-            <a href="/notes">All Notes</a>|
-            <a href="/upload">upload Notes</a>|
-            <a href="/logout">Logout</a>|
-           
-        </div>
-        </nav>
+<nav class="navbar">
+    <div class="logo">
+        Notes Sharing Platform
+    </div>
+
+    <div class="menu">
+        <a href="/">Home</a> |
+        <a href="/notes">All Notes</a> |
+        <a href="/upload">Upload Notes</a> |
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
 
 <div class="container mt-5">
-
-
 
     <div class="card shadow">
         <div class="card-body">
@@ -34,24 +33,32 @@
 
             <form action="/upload" method="POST" enctype="multipart/form-data">
 
+                <!-- Title -->
                 <div class="mb-3">
-                    <label>Title</label>
-                    <input type="text" name="title" class="form-control" placeholder="Enter Title">
+                    <label class="form-label">Title</label>
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="Enter Note Title"
+                           required>
                 </div>
 
+                <!-- Course -->
                 <div class="mb-3">
-                    <label>Subject</label>
-                    <select name="subject" class="form-select">
-                        <option>Computer Science</option>
-                        <option>Mathematics</option>
-                        <option>Physics</option>
-                        <option>C Programming</option>
+                    <label class="form-label">Course</label>
+                    <select name="course" class="form-select" required>
+                        <option value="">-- Select Course --</option>
+                        <option value="B.Tech">B.Tech</option>
+                        <option value="BCA">BCA</option>
+                        <option value="B.Com">B.Com</option>
+                        <option value="B.Pharma">B.Pharma</option>
                     </select>
                 </div>
 
+                <!-- Semester -->
                 <div class="mb-3">
-                    <label>Semester</label>
-                    <select name="semester" class="form-select">
+                    <label class="form-label">Semester</label>
+                    <select name="semester" class="form-select" required>
                         <option>1st Semester</option>
                         <option>2nd Semester</option>
                         <option>3rd Semester</option>
@@ -63,25 +70,32 @@
                     </select>
                 </div>
 
+                <!-- Description -->
                 <div class="mb-3">
-                    <label>Description</label>
-                    <textarea name="description" class="form-control" rows="4"></textarea>
+                    <label class="form-label">Description</label>
+                    <textarea name="description"
+                              class="form-control"
+                              rows="4"></textarea>
                 </div>
 
+                <!-- PDF -->
                 <div class="mb-3">
-                    <label>Choose PDF File</label>
-                    <input type="file" name="pdf" class="form-control">
+                    <label class="form-label">Choose PDF File</label>
+                    <input type="file"
+                           name="pdf"
+                           class="form-control"
+                           accept=".pdf"
+                           required>
                 </div>
 
-                <button class="btn btn-success w-100">
-                    Upload
+                <button type="submit" class="btn btn-success w-100">
+                    Upload Note
                 </button>
 
             </form>
 
         </div>
     </div>
-
 
 </div>
 

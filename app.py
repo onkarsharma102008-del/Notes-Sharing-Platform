@@ -192,40 +192,58 @@ def logout():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
 
-     if "username" not in session:
+    if "username" not in session:
         return redirect(url_for("login"))
-     
-     if request.method == "POST":
+
+    if request.method == "POST":
+
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
 
         title = request.form["title"]
-        subject = request.form["subject"]
+        course = request.form["course"]
+        # subject = request.form["subject"]
         semester = request.form["semester"]
-        Uploaded_by = session["username"]
-        upload_date = datetime.now().strftime("%d %b %y")
+
+        # Course ke hisab se Subject set hoga
+        if course == "B.Tech":
+            subject = "Computer Science"
+        elif course == "BCA":
+            subject = "Computer Science"
+        elif course == "B.Pharma":
+            subject = "Pharmacy"
+        elif course == "B.Com":
+            subject = "Commerce"
+        else:
+            subject = "General"
+
+        uploaded_by = session["username"]
+        upload_date = datetime.now().strftime("%d-%m-%Y")
 
         file = request.files["pdf"]
-        filename =  secure_filename (file.filename)
-        file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename))
-        upload_date=datetime.now().strftime("%d-%m-%y")
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+
         cursor.execute("""
-INSERT INTO notes
-(title, subject, semester, filename, uploaded_by, uploaded_date)
-VALUES (?, ?, ?, ?, ?, ?)
-""", (
-    title,
-    subject,
-    semester,
-    filename,
-    Uploaded_by,
-    upload_date
-))
+            INSERT INTO notes
+            (title, subject, semester, filename, uploaded_by, upload_date, course)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            title,
+            subject,
+            semester,
+            filename,
+            uploaded_by,
+            upload_date,
+            course
+        ))
 
         conn.commit()
         conn.close()
 
         return redirect(url_for("notes"))
 
-     return render_template("upload.html")
+    return render_template("upload.html")
 
    
 @app.route("/notes")
@@ -419,7 +437,7 @@ def edit(id):
             UPDATE notes
             SET title=?, subject=?, semester=?
             WHERE id=?
-        """, (title, subject, semester, id))
+        """, (title,subject, semester, id))
 
         conn.commit()
         conn.close()
@@ -559,6 +577,26 @@ def verify_reset_otp():
             return "Invalid OTP"
 
     return render_template("verify_reset_otp.html")
+
+@app.route("/course/<course_name>")
+def course_notes(course_name):
+
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM notes WHERE course=?",
+        (course_name,)
+    )
+
+    notes = cursor.fetchall()
+    conn.close()
+
+    return render_template("all_notes.html", notes=notes)
 
 if __name__ == "__main__":
     app.run(debug=True)
