@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS notes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     subject TEXT,
+    course TEXT
     semester TEXT,
     filename TEXT,
     Uploaded_by TEXT,
