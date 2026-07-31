@@ -599,7 +599,7 @@ def course_notes(course_name):
 
     return render_template("all_notes.html", notes=notes)
 
-    def init_db():
+def init_db():
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
 
@@ -619,6 +619,5 @@ def course_notes(course_name):
 init_db()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT",5000))
-    app.run(host="0.0.0.0",port=port)
-    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
