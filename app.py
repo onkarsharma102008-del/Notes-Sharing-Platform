@@ -498,7 +498,7 @@ def forgot_password():
 
             msg.body = f"Your Password Reset OTP is: {otp}"
 
-            mail.send(msg)
+            # mail.send(msg)
 
             return redirect(url_for("verify_reset_otp"))
 
